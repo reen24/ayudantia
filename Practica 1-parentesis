@@ -18,3 +18,17 @@ def validacion_de_parentesis_bien_formados(s):
     if not pila:
         print("La cadena fue aceptada porque los parentesis estan bien formados.")
         return True
+    else:
+        print("La cadena fue rechazada porque hay un parentesis de apertura sin un parentesis de cierre")
+        return False
+        
+
+#Ejemplos
+cadena1 = "(()())"
+print(f"Cadena{cadena1}: {validacion_de_parentesis_bien_formados(cadena1)}")
+   
+cadena2= "(()"
+print(f"Cadena{cadena2}: {validacion_de_parentesis_bien_formados(cadena2)}")
+
+
+      
