@@ -1,0 +1,20 @@
+#Dada una cadena s
+def validacion_de_parentesis_bien_formados(s): 
+    pila = []
+    for caracter in s: 
+        # Parentesis de apertura 
+        if caracter == '(': 
+          pila.append(caracter)
+        # Parentesis de cierre 
+        elif caracter == ')':
+            # Si la pila no esta vacia o hay un parentesis abierto, la cadena no esta bien formada
+            if not pila or pila[-1] != '(':
+                print("La cadena fue rechazada porque hay un parentesis de apertura sin un parentesis de cierre")
+                return False 
+            # Si encontramos un par, lo sacamos de la pila 
+            pila.pop()
+    
+     # Si la pila esta vacia, la cadena esta bien formada 
+    if not pila:
+        print("La cadena fue aceptada porque los parentesis estan bien formados.")
+        return True
