@@ -1,0 +1,125 @@
+import pandas as pd
+
+# Trie codificador
+class Trie: 
+    def __init__(self, excel_file):
+        self.root = {}
+        self.end_symbol = '#'
+        self.construct_trie(excel_file)
+
+    # Método de construcción
+    def construct_trie(self, excel_file):
+        df = pd.read_excel(excel_file)
+        letters = df['Letters']
+        binary_codes = df['Binary coding'].astype(str)  
+        for i, code in enumerate(binary_codes):
+            self.add_word(code, letters[i])
+
+    def add_word(self, word, letter):
+        node = self.root
+        for char in word:
+            if char not in node:
+                node[char] = {}
+            node = node[char]
+        node[self.end_symbol] = letter
+
+    # Método de codificación
+    def codificacion(self, word):
+        node = self.root
+        encoded_word = ''
+        for char in word: 
+            if char in node:
+                node = node[char]
+            else:
+                continue
+            if self.end_symbol in node:
+                encoded_word += '1'
+                node = self.root
+            else:
+                encoded_word += '0'
+        return encoded_word
+
+    # Método de decodificación
+    def decodificacion(self, encoded_word):
+        node = self.root
+        decoded = ''
+        temp_word = ''
+        for char in encoded_word:
+            if char == '1':
+                if self.end_symbol in node:
+                    decoded += node[self.end_symbol]
+                node = self.root
+            elif char == '0':
+                if '0' in node:
+                    node = node['0']
+                else:
+                    node = {}
+        return decoded
+
+    # Método de radar 
+    def radar(self, word):
+        node = self.root.get("0", {}).get("1", None)
+        radar_word = ''
+        for char in word: 
+            if char in node:
+                radar_word += '1'
+                node = node[char]
+            else: 
+                radar_word += '0'
+        return radar_word
+
+    
+    # Método para leer archivo .txt con mensaje binario y decodificarlo
+    def decode_from_txt(self, txt_file):
+        with open(txt_file, 'r') as file:
+            encoded_message = file.read().strip()
+        return self.decodificacion(encoded_message)
+
+# Clase para el grafo dirigido              
+class Directed_graph: 
+    def __init__(self): 
+        self.nodos = []
+        self.arcos = {}
+  
+    def len_arcos(self): 
+        return len(self.arcos)
+  
+    def len_nodos(self): 
+        return len(self.nodos)
+  
+    def antecesores(self, nodo): 
+        if nodo not in self.nodos: 
+            print(nodo, "no pertenece al conjunto de nodos")
+            return []
+        else: 
+            Ant = []
+            for x in self.arcos: 
+                if nodo == x[-1]:
+                    Ant.append(x[0])
+            return Ant
+
+    def sucesores(self, nodo): 
+        if nodo not in self.nodos: 
+            print(nodo, "no pertenece al conjunto de nodos")
+            return []
+        else: 
+            Ant = []
+            for x in self.arcos:
+                if nodo == x[0]: 
+                    Ant.append(x[-1])
+            return Ant
+  
+    def add_vertex(self, nodo): 
+        self.nodos.append(nodo)
+  
+    def add_arc(self, arco, peso): 
+        self.arcos[arco] = peso 
+        
+    # ejemplo
+    if __name__ == "__main__":
+      trie = Trie('Code.xlsx')
+      with open('Mensaje.txt', 'r') as file:
+        mensaje_binario = file.read().strip()
+        mensaje_decodificado = trie.decodificacion(mensaje_binario)
+# Imprimir el mensaje decodificado
+print("Mensaje decodificado:", mensaje_decodificado)
